@@ -58,12 +58,43 @@
      </LinearLayout>
 
 在PROJECT中添加关于更新时间的请求   
-    'private static final String[] PROJECTION = new String[] {
+    `private static final String[] PROJECTION = new String[] {
     NotePad.Notes._ID, // 0
     NotePad.Notes.COLUMN_NAME_TITLE, // 1
     NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE
-    };'
+    };`
 
+    `String[] dataColumns = { NotePad.Notes.COLUMN_NAME_TITLE ,NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE} ;
+    // The view IDs that will display the cursor columns, initialized to the TextView in
+    // noteslist_item.xml text2笔记列表显示笔记条目的时间戳
+    int[] viewIDs = { android.R.id.text1,android.R.id.text2 };`
+
+但要注意的是，此时数据库返回的时间不是我们常用的日期格式，因此需要转化
+    `adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
+                    @Override
+                    public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+                    // Get the column index for the modification date
+                    if (columnIndex == cursor.getColumnIndex(NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE)) {
+                    // Get the timestamp (in milliseconds) from the cursor
+                    long modificationDateInMillis = cursor.getLong(columnIndex);
+
+                    // Format the timestamp to a readable date
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                    String formattedDate = dateFormat.format(new Date(modificationDateInMillis));
+
+                    // Set the formatted date on the TextView (assuming view is a TextView)
+                    TextView textView = (TextView) view;
+                    textView.setText(formattedDate);
+
+                    return true; // Returning true indicates that we've handled the binding
+                }
+
+                return false; // Return false to allow default binding for other columns
+            }
+        });
+        // Sets the ListView's adapter to be the cursor adapter that was just created.
+        setListAdapter(adapter);
+    }`
 
 ### 搜索便签：通过搜索栏快速查找特定的便签。
 <img src="png/img_1.png" width="50%"/>    
