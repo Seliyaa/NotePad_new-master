@@ -58,22 +58,24 @@
      </LinearLayout>
 
 在PROJECT中添加关于更新时间的请求   
-    `private static final String[] PROJECTION = new String[] {
-    NotePad.Notes._ID, // 0
-    NotePad.Notes.COLUMN_NAME_TITLE, // 1
-    NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE
-    };`
 
-    String[] dataColumns = { NotePad.Notes.COLUMN_NAME_TITLE ,NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE} ;
-    // The view IDs that will display the cursor columns, initialized to the TextView in
-    // noteslist_item.xml text2笔记列表显示笔记条目的时间戳
-    int[] viewIDs = { android.R.id.text1,android.R.id.text2 };
+        private static final String[] PROJECTION = new String[] {
+            NotePad.Notes._ID, // 0
+            NotePad.Notes.COLUMN_NAME_TITLE, // 1
+            NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE
+        };
+-
+
+        String[] dataColumns = { NotePad.Notes.COLUMN_NAME_TITLE ,NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE} ;
+        // The view IDs that will display the cursor columns, initialized to the TextView in
+        // noteslist_item.xml text2笔记列表显示笔记条目的时间戳
+        int[] viewIDs = { android.R.id.text1,android.R.id.text2 };
 
 但要注意的是，此时数据库返回的时间不是我们常用的日期格式，因此需要转化
 
-    `adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
-                    @Override
-                    public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+    adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
+                @Override
+                public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
                     // Get the column index for the modification date
 
                     if (columnIndex == cursor.getColumnIndex(NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE)) {
@@ -96,7 +98,7 @@
         });
         // Sets the ListView's adapter to be the cursor adapter that was just created.
         setListAdapter(adapter);
-    }`
+    }
 
 ### 搜索便签：通过搜索栏快速查找特定的便签。
 
@@ -180,22 +182,22 @@
             // Handle all of the possible menu actions.
             switch (item.getItemId()) {
             case R.id.menu_save:
-            String text = mText.getText().toString();
-            updateNote(text, null);
-            finish();
+                String text = mText.getText().toString();
+                updateNote(text, null);
+                finish();
             break;
             case R.id.menu_delete:
-            deleteNote();
-            finish();
-            break;
-            case R.id.menu_revert:
-            cancelNote();
+                deleteNote();
+                finish();
+                break;
+                case R.id.menu_revert:
+                cancelNote();
             break;
             case R.id.menu_increase_font_size:
             // 增大字体大小
-            float currentSize = mText.getTextSize();
-            mText.setTextSize(TypedValue.COMPLEX_UNIT_PX, currentSize + 20);
-            return true;
+                float currentSize = mText.getTextSize();
+                mText.setTextSize(TypedValue.COMPLEX_UNIT_PX, currentSize + 20);
+                return true;
             case R.id.menu_decrease_font_size:
                 // 减小字体大小
                 float currentSize2 = mText.getTextSize();
@@ -210,28 +212,28 @@
 #### 变大
     case R.id.menu_increase_font_size:
     // 增大字体大小
-    float currentSize = mText.getTextSize();
-    mText.setTextSize(TypedValue.COMPLEX_UNIT_PX, currentSize + 20);
+        float currentSize = mText.getTextSize();
+        mText.setTextSize(TypedValue.COMPLEX_UNIT_PX, currentSize + 20);
     return true;
 <img src="png/img_6.png" width="50%"/>  
 
 #### 变小
     case R.id.menu_decrease_font_size:
     // 减小字体大小
-    float currentSize2 = mText.getTextSize();
-    mText.setTextSize(TypedValue.COMPLEX_UNIT_PX, currentSize2 - 20);
+        float currentSize2 = mText.getTextSize();
+        mText.setTextSize(TypedValue.COMPLEX_UNIT_PX, currentSize2 - 20);
     return true;
 <img src="png/img_7.png" width="50%"/>
 
 #### 随机变色
         private int getRandomColor() {
-        Random random = new Random();
-        // 生成RGB颜色值
-        int red = random.nextInt(256);     // 0-255之间的随机数
-        int green = random.nextInt(256);   // 0-255之间的随机数
-        int blue = random.nextInt(256);    // 0-255之间的随机数
-        // 返回颜色，RGB格式
-        return Color.rgb(red, green, blue);
+            Random random = new Random();
+            // 生成RGB颜色值
+            int red = random.nextInt(256);     // 0-255之间的随机数
+            int green = random.nextInt(256);   // 0-255之间的随机数
+            int blue = random.nextInt(256);    // 0-255之间的随机数
+            // 返回颜色，RGB格式
+            return Color.rgb(red, green, blue);
     }
 ##### 1变
 
@@ -240,3 +242,41 @@
 ##### 2变
 
 <img src="png/img_9.png" width="50%"/>    
+
+### 最后是一些关于UI的优化
+
+#### 便签整体使用了纸质背景
+在note_editor中添加 `android:background="@drawable/background"`即可实现
+#### NotePad的首页中记录的样式做了更改
+- 划分间隔
+- 透明样式
+- 圆角
+  
+            <TextView
+             android:id="@android:id/text1"
+             android:layout_width="match_parent"
+             android:layout_height="54dp"
+             android:layout_margin="5px"
+             android:gravity="center_vertical"
+             android:paddingLeft="10dip"
+             android:paddingTop="3dip"
+             android:singleLine="true"
+             android:textAppearance="?android:attr/textAppearanceLarge"
+             android:textColor="#AB000000" />
+#### 对编辑文本中的间隔做了更改，变为浅白透明
+            public LinedEditText(Context context, AttributeSet attrs) {
+                super(context, attrs);
+                // Creates a Rect and a Paint object, and sets the style and color of the Paint object.
+                mRect = new Rect();
+                mPaint = new Paint();
+                mPaint.setStyle(Paint.Style.STROKE);
+                mPaint.setColor(0xFFFFFFFF);
+                //   更改分割线为白色透明
+
+            }
+#### titleEdit中弹窗的背景与OK确认键外观改造
+            <?xml version="1.0" encoding="utf-8"?>
+            <shape xmlns:android="http://schemas.android.com/apk/res/android">
+            <solid android:color="#9E000000" /> <!-- 设置背景颜色 -->
+            <corners android:radius="16dp" /> <!-- 设置圆角半径 -->
+            </shape>
