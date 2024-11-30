@@ -1,46 +1,23 @@
-## 配置详情
+# NoteTaker - Android 便签应用
 
-### 1. `使用JDK9的版本`
+NotePad 是一个简单的 Android 便签小应用
+用 户可以轻松地添加、删除、搜索和管理便签内容。
+它支持便签标题和内容的修改、字体大小和颜色的更改，还支持黏贴便签。
+![img.png](img.png)
+NotePad主页面如图所示
+## 拓展功能特性
+- **标签目录具有时间戳**：能更方便地查看便签的更新时间。
+  -![img_2.png](img_2.png)
 
-### 2. `gradle-wrapper.properties`
 
-请使用以下配置的 `distributionUrl`：
-
-![Alt Text](./001.png)
-
-```properties
-distributionUrl=https\://services.gradle.org/distributions/gradle-6.7.1-bin.zip
-```
-
-### 3.  `build.gradle(notepad)`
-classpath请使用3.4.0:
-
-![Alt Text](./002.png)
-
-```properties
-classpath="com.android.tools.build:gradle:3.4.0"
-```
-### 4. `build成功之后`
-#### 4.1 `Error:Execution failed for task ':app:packageDebug'... 出现这个报错`
-build.gradle（:app）中的 android{ ... } 中 添加：
-
-![Alt Text](./003.png)
-
-```properties
-packagingOptions {
-    exclude 'META-INF/DEPENDENCIES.txt'
-    exclude 'META-INF/LICENSE.txt'
-    exclude 'META-INF/NOTICE.txt'
-    exclude 'META-INF/NOTICE'
-    exclude 'META-INF/LICENSE'
-    exclude 'META-INF/DEPENDENCIES'
-    exclude 'META-INF/notice.txt'
-    exclude 'META-INF/license.txt'
-    exclude 'META-INF/dependencies.txt'
-    exclude 'META-INF/LGPL2.1'
-}
-```
-#### 4.2 `com.android.ide.common.signing.KeytoolException: Failed to read key AndroidDebugKey from store出现这个问题`
-请删除以下两个文件并clean build之后rebuild（此文件的地址请看报错信息）:
-
-![Alt Text](./004.png)
+- **搜索便签**：通过搜索栏快速查找特定的便签。
+- ![img_1.png](img_1.png)
+- ![img_3.png](img_3.png)
+- ![img_4.png](img_4.png)
+- 
+- **更改便签字体大小与颜色**：可以根据个人需求更改便签内容的字体大小和颜色。
+- ![img_5.png](img_5.png)
+- ![img_6.png](img_6.png)
+- ![img_7.png](img_7.png)
+- ![img_8.png](img_8.png)
+- ![img_9.png](img_9.png)
