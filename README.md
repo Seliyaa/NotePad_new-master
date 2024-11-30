@@ -12,12 +12,12 @@ NotePad主页面如图所示
 
 
 - **搜索便签**：通过搜索栏快速查找特定的便签。
-- <img src="png/img_1.png" width="50%"/>    
-- <img src="png/img_3.png" width="50%"/>    
-- <img src="png/img_4.png" width="50%"/>    
+<img src="png/img_1.png" width="50%"/>    
+<img src="png/img_3.png" width="50%"/>    
+<img src="png/img_4.png" width="50%"/>    
 - **更改便签字体大小与颜色**：可以根据个人需求更改便签内容的字体大小和颜色。
-- <img src="png/img_5.png" width="50%"/>    
-- <img src="png/img_6.png" width="50%"/>    
-- <img src="png/img_7.png" width="50%"/>    
-- <img src="png/img_8.png" width="50%"/>    
-- <img src="png/img_9.png" width="50%"/>    
+<img src="png/img_5.png" width="50%"/>    
+<img src="png/img_6.png" width="50%"/>    
+<img src="png/img_7.png" width="50%"/>    
+<img src="png/img_8.png" width="50%"/>    
+<img src="png/img_9.png" width="50%"/>    
