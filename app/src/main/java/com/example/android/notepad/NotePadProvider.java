@@ -46,6 +46,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 /**
+ * NotePadProvider 这是笔记本应用的ContentProvider，也是整个应用的关键所在
  * Provides access to a database of notes. Each note has a title, the note
  * itself, a creation date and a modified data.
  */

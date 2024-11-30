@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 字体大小 -->
+    <item
+        android:id="@+id/menu_increase_font_size"
+        android:title="Increase Font Size"
+        android:icon="@android:drawable/ic_menu_add" />
+    <item
+        android:id="@+id/menu_decrease_font_size"
+        android:title="Decrease Font Size"
+        android:icon="@android:drawable/ic_menu_delete" />
+
+    <!-- 字体颜色 -->
+    <item
+        android:id="@+id/menu_change_font_color"
+        android:title="Change Font Color"
+        android:icon="@android:drawable/ic_menu_edit" />
+</menu>

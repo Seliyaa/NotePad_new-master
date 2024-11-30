@@ -29,6 +29,7 @@
     <string name="menu_open">Open</string>
     <string name="menu_revert">Revert changes</string>
     <string name="menu_copy">Copy</string>
+    <string name="menu_select">Search</string>
     <string name="menu_paste">Paste</string>
 
     <string name="button_ok">OK</string>

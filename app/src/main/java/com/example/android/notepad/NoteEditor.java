@@ -27,20 +27,23 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
 
 import java.util.Objects;
+import java.util.Random;
 
-/**
+/**NoteEditor 编辑笔记内容的Activity
  * This Activity handles "editing" a note, where editing is responding to
  * {@link Intent#ACTION_VIEW} (request to view data), edit a note
  * {@link Intent#ACTION_EDIT}, create a note {@link Intent#ACTION_INSERT}, or
@@ -95,7 +98,9 @@ public class NoteEditor extends Activity {
             mRect = new Rect();
             mPaint = new Paint();
             mPaint.setStyle(Paint.Style.STROKE);
-            mPaint.setColor(0x800000FF);
+            mPaint.setColor(0xFFFFFFFF);
+//            更改分割线为白色透明
+
         }
 
         /**
@@ -404,6 +409,7 @@ public class NoteEditor extends Activity {
                     new ComponentName(this, NoteEditor.class), null, intent, 0, null);
         }
 
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -442,9 +448,37 @@ public class NoteEditor extends Activity {
         case R.id.menu_revert:
             cancelNote();
             break;
+            case R.id.menu_increase_font_size:
+                // 增大字体大小
+                float currentSize = mText.getTextSize();
+                mText.setTextSize(TypedValue.COMPLEX_UNIT_PX, currentSize + 20);
+                return true;
+
+            case R.id.menu_decrease_font_size:
+                // 减小字体大小
+                float currentSize2 = mText.getTextSize();
+                mText.setTextSize(TypedValue.COMPLEX_UNIT_PX, currentSize2 - 20);
+                return true;
+
+            case R.id.menu_change_font_color:
+                // 改变字体颜色，打开颜色选择器
+                int randomTextColor = getRandomColor();
+                mText.setTextColor(randomTextColor);
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
+    private int getRandomColor() {
+        Random random = new Random();
+        // 生成RGB颜色值
+        int red = random.nextInt(256);     // 0-255之间的随机数
+        int green = random.nextInt(256);   // 0-255之间的随机数
+        int blue = random.nextInt(256);    // 0-255之间的随机数
+
+        // 返回颜色，RGB格式
+        return Color.rgb(red, green, blue);
+    }
+
 
 //BEGIN_INCLUDE(paste)
     /**

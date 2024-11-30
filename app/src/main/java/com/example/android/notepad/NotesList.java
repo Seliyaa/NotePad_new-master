@@ -24,8 +24,10 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -35,9 +37,15 @@ import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
-/**
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+/**NotesList 应用程序的入口，笔记本的首页面会显示笔记的列表
  * Displays a list of notes. Will display notes from the {@link Uri}
  * provided in the incoming Intent if there is one, otherwise it defaults to displaying the
  * contents of the {@link NotePadProvider}.
@@ -58,6 +66,7 @@ public class NotesList extends ListActivity {
     private static final String[] PROJECTION = new String[] {
             NotePad.Notes._ID, // 0
             NotePad.Notes.COLUMN_NAME_TITLE, // 1
+            NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE
     };
 
     /** The index of the title column */
@@ -79,7 +88,9 @@ public class NotesList extends ListActivity {
          */
         // Gets the intent that started this Activity.
         Intent intent = getIntent();
-
+        ListView listView = getListView();
+        listView.setBackgroundResource(R.drawable.background);
+//      设置首页的背景
         // If there is no data associated with the Intent, sets the data to the default URI, which
         // accesses a list of notes.
         if (intent.getData() == null) {
@@ -115,11 +126,11 @@ public class NotesList extends ListActivity {
          */
 
         // The names of the cursor columns to display in the view, initialized to the title column
-        String[] dataColumns = { NotePad.Notes.COLUMN_NAME_TITLE } ;
+        String[] dataColumns = { NotePad.Notes.COLUMN_NAME_TITLE ,NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE} ;
 
         // The view IDs that will display the cursor columns, initialized to the TextView in
-        // noteslist_item.xml
-        int[] viewIDs = { android.R.id.text1 };
+        // noteslist_item.xml text2笔记列表显示笔记条目的时间戳
+        int[] viewIDs = { android.R.id.text1,android.R.id.text2 };
 
         // Creates the backing adapter for the ListView.
         SimpleCursorAdapter adapter
@@ -130,7 +141,32 @@ public class NotesList extends ListActivity {
                       dataColumns,
                       viewIDs
               );
+/**
+     *
+     * 笔记列表显示笔记条目的时间戳
+ */
+        adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
+            @Override
+            public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+                // Get the column index for the modification date
+                if (columnIndex == cursor.getColumnIndex(NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE)) {
+                    // Get the timestamp (in milliseconds) from the cursor
+                    long modificationDateInMillis = cursor.getLong(columnIndex);
 
+                    // Format the timestamp to a readable date
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                    String formattedDate = dateFormat.format(new Date(modificationDateInMillis));
+
+                    // Set the formatted date on the TextView (assuming view is a TextView)
+                    TextView textView = (TextView) view;
+                    textView.setText(formattedDate);
+
+                    return true; // Returning true indicates that we've handled the binding
+                }
+
+                return false; // Return false to allow default binding for other columns
+            }
+        });
         // Sets the ListView's adapter to be the cursor adapter that was just created.
         setListAdapter(adapter);
     }
@@ -148,11 +184,54 @@ public class NotesList extends ListActivity {
      * @param menu A Menu object, to which menu items should be added.
      * @return True, always. The menu should be displayed.
      */
+    private void filterNotes(String query) {
+        // 获取当前的 URI 和其他参数
+        Uri uri = getIntent().getData();
+
+        // 如果用户没有输入搜索内容，显示所有笔记
+        if (TextUtils.isEmpty(query)) {
+            // 没有查询内容时，重新加载所有笔记
+            Cursor cursor = managedQuery(uri, PROJECTION, null, null, NotePad.Notes.DEFAULT_SORT_ORDER);
+            ((SimpleCursorAdapter) getListAdapter()).swapCursor(cursor);
+        } else {
+            // 查询内容不为空时，过滤笔记
+            String selection = NotePad.Notes.COLUMN_NAME_TITLE + " LIKE ?";
+            String[] selectionArgs = new String[]{"%" + query + "%"};
+
+            // 执行查询，过滤包含查询文本的笔记
+            Cursor cursor = managedQuery(uri, PROJECTION, selection, selectionArgs, NotePad.Notes.DEFAULT_SORT_ORDER);
+            ((SimpleCursorAdapter) getListAdapter()).swapCursor(cursor);
+        }
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate menu from XML resource
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.list_options_menu, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.menu_search);
+        // 获取 SearchView 控件
+        SearchView searchView = (SearchView) searchItem.getActionView();
+
+
+        // 设置搜索视图的监听器
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // 在提交时触发过滤
+                filterNotes(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // 在输入时触发过滤
+                filterNotes(newText);
+                return true;
+            }
+        });
+
+
 
         // Generate any additional actions that can be performed on the
         // overall list.  In a normal install, there are no additional
@@ -257,6 +336,9 @@ public class NotesList extends ListActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.menu_search:
+
+            return true;
         case R.id.menu_add:
           /*
            * Launches a new Activity using an Intent. The intent filter for the Activity
@@ -292,7 +374,6 @@ public class NotesList extends ListActivity {
      */
     @Override
     public void onCreateContextMenu(ContextMenu menu, View view, ContextMenuInfo menuInfo) {
-
         // The data from the menu item.
         AdapterView.AdapterContextMenuInfo info;
 

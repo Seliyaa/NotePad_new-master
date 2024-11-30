@@ -20,6 +20,7 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
+ * NotePad是数据契约类，用来提供一种统一的数据访问格式。整个笔记本应用只有一张表——“notes”。
  * Defines a contract between the Note Pad content provider and its clients. A contract defines the
  * information that a client needs to access the provider as one or more data tables. A contract
  * is a public, non-extendable (final) class that contains constants defining column names and

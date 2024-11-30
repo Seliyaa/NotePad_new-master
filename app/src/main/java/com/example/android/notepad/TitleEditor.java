@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.widget.EditText;
 
 /**
+ * TitleEditor 编辑笔记标题的Activity
  * This Activity allows the user to edit a note's title. It displays a floating window
  * containing an EditText.
  * <p>

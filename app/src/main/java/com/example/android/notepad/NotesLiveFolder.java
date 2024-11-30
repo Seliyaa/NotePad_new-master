@@ -23,6 +23,9 @@ import android.os.Bundle;
 import android.provider.LiveFolders;
 
 /**
+ * NotesLiveFolder ContentProvider的LiveFolder（实时文件夹）
+ * 这个功能在Android API 14后被废弃，不再支持。因此代码中所有涉及LiveFolder的内容将不再阐述。
+ *
  * This Activity creates a live folder Intent and
  * sends it back to HOME. From the data in the Intent, HOME creates a live folder and displays
  * its icon in the Home view.
