@@ -64,18 +64,21 @@
     NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE
     };`
 
-    `String[] dataColumns = { NotePad.Notes.COLUMN_NAME_TITLE ,NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE} ;
+    String[] dataColumns = { NotePad.Notes.COLUMN_NAME_TITLE ,NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE} ;
     // The view IDs that will display the cursor columns, initialized to the TextView in
     // noteslist_item.xml text2笔记列表显示笔记条目的时间戳
-    int[] viewIDs = { android.R.id.text1,android.R.id.text2 };`
+    int[] viewIDs = { android.R.id.text1,android.R.id.text2 };
 
 但要注意的是，此时数据库返回的时间不是我们常用的日期格式，因此需要转化
+
     `adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
                     @Override
                     public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
                     // Get the column index for the modification date
+
                     if (columnIndex == cursor.getColumnIndex(NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE)) {
                     // Get the timestamp (in milliseconds) from the cursor
+
                     long modificationDateInMillis = cursor.getLong(columnIndex);
 
                     // Format the timestamp to a readable date
@@ -88,7 +91,6 @@
 
                     return true; // Returning true indicates that we've handled the binding
                 }
-
                 return false; // Return false to allow default binding for other columns
             }
         });
@@ -97,14 +99,144 @@
     }`
 
 ### 搜索便签：通过搜索栏快速查找特定的便签。
-<img src="png/img_1.png" width="50%"/>    
-<img src="png/img_3.png" width="50%"/>    
-<img src="png/img_4.png" width="50%"/>    
 
+#### 初始化搜索栏的控件
+
+<img src="png/img_1.png" width="50%"/>
+
+
+        @Override
+        public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate menu from XML resource
+
+        MenuInflater inflater = getMenuInflater();
+
+        inflater.inflate(R.menu.list_options_menu, menu);
+        MenuItem searchItem = menu.findItem(R.id.menu_search);
+        // 获取 SearchView 控件
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setQueryHint("请输入进行查找");
+        // 设置搜索视图的监听器
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // 在提交时触发过滤
+                filterNotes(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // 在输入时触发过滤
+                filterNotes(newText);
+                return true;
+            }
+        });
+#### filterNotes():
+
+        private void filterNotes(String query) {
+        // 获取当前的 URI 和其他参数
+        Uri uri = getIntent().getData();
+
+        // 如果用户没有输入搜索内容，显示所有笔记
+        if (TextUtils.isEmpty(query)) {
+            // 没有查询内容时，重新加载所有笔记
+            Cursor cursor = managedQuery(uri, PROJECTION, null, null, NotePad.Notes.DEFAULT_SORT_ORDER);
+            ((SimpleCursorAdapter) getListAdapter()).swapCursor(cursor);
+        } else {
+            // 查询内容不为空时，过滤笔记
+            String selection = NotePad.Notes.COLUMN_NAME_TITLE + " LIKE ?";
+            String[] selectionArgs = new String[]{"%" + query + "%"};
+
+            // 执行查询，过滤包含查询文本的笔记
+            Cursor cursor = managedQuery(uri, PROJECTION, selection, selectionArgs, NotePad.Notes.DEFAULT_SORT_ORDER);
+            ((SimpleCursorAdapter) getListAdapter()).swapCursor(cursor);
+        }
+  }
+<img src="png/img_3.png" width="50%"/>    
+<img src="png/img_4.png" width="50%"/>
 
 ### 更改便签字体大小与颜色：可以根据个人需求更改便签内容的字体大小和颜色。
-<img src="png/img_5.png" width="50%"/>    
-<img src="png/img_6.png" width="50%"/>    
-<img src="png/img_7.png" width="50%"/>    
+
+#### 菜单栏配置
+
+    <item
+        android:id="@+id/menu_increase_font_size"
+        android:title="大大大大"
+        />
+    <item
+        android:id="@+id/menu_decrease_font_size"
+        android:title="小小小小"
+        />
+    <item
+        android:id="@+id/menu_change_font_color"
+        android:title="变变变变"
+        />
+
+<img src="png/img_5.png" width="50%"/>  
+
+            @Override
+            public boolean onOptionsItemSelected(MenuItem item) {
+            // Handle all of the possible menu actions.
+            switch (item.getItemId()) {
+            case R.id.menu_save:
+            String text = mText.getText().toString();
+            updateNote(text, null);
+            finish();
+            break;
+            case R.id.menu_delete:
+            deleteNote();
+            finish();
+            break;
+            case R.id.menu_revert:
+            cancelNote();
+            break;
+            case R.id.menu_increase_font_size:
+            // 增大字体大小
+            float currentSize = mText.getTextSize();
+            mText.setTextSize(TypedValue.COMPLEX_UNIT_PX, currentSize + 20);
+            return true;
+            case R.id.menu_decrease_font_size:
+                // 减小字体大小
+                float currentSize2 = mText.getTextSize();
+                mText.setTextSize(TypedValue.COMPLEX_UNIT_PX, currentSize2 - 20);
+                return true;
+            case R.id.menu_change_font_color:
+                // 改变字体颜色，打开颜色选择器
+                int randomTextColor = getRandomColor();
+                mText.setTextColor(randomTextColor);
+                return true;
+        }
+#### 变大
+    case R.id.menu_increase_font_size:
+    // 增大字体大小
+    float currentSize = mText.getTextSize();
+    mText.setTextSize(TypedValue.COMPLEX_UNIT_PX, currentSize + 20);
+    return true;
+<img src="png/img_6.png" width="50%"/>  
+
+#### 变小
+    case R.id.menu_decrease_font_size:
+    // 减小字体大小
+    float currentSize2 = mText.getTextSize();
+    mText.setTextSize(TypedValue.COMPLEX_UNIT_PX, currentSize2 - 20);
+    return true;
+<img src="png/img_7.png" width="50%"/>
+
+#### 随机变色
+        private int getRandomColor() {
+        Random random = new Random();
+        // 生成RGB颜色值
+        int red = random.nextInt(256);     // 0-255之间的随机数
+        int green = random.nextInt(256);   // 0-255之间的随机数
+        int blue = random.nextInt(256);    // 0-255之间的随机数
+        // 返回颜色，RGB格式
+        return Color.rgb(red, green, blue);
+    }
+##### 1变
+
 <img src="png/img_8.png" width="50%"/>    
+
+##### 2变
+
 <img src="png/img_9.png" width="50%"/>    
