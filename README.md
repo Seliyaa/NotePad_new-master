@@ -17,7 +17,7 @@
 <img src="png/img_2.png" width="50%"/>
 设置布局文件，嵌套线性布局
 将title和时间绑定在ListView中
-`    
+    
      <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
@@ -56,7 +56,6 @@
      
          </LinearLayout>
      </LinearLayout>
-`
 
 
 
