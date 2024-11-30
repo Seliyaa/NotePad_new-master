@@ -1,12 +1,12 @@
 # NotePad - Android 便签应用
-
-<h3>NotePad 是一个简单的 Android 便签小应用
+<h4>简介</h4>
+<h4>NotePad 是一个简单的 Android 便签小应用
 用 户可以轻松地添加、删除、搜索和管理便签内容。
 它支持便签标题和内容的修改、字体大小和颜色的更改，还支持黏贴便签。
-</h3>
+</h4>
 <img src="png/img.png" width="50%"/>
 - NotePad主页面如图所示
-## 拓展功能特性
+<h2>拓展功能特性 </h2>
 - ### **标签目录具有时间戳**：能更方便地查看便签的更新时间。
 <img src="png/img_2.png" width="50%"/>    
 
