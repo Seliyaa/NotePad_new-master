@@ -7,7 +7,7 @@ NotePad 是一个简单的 Android 便签小应用
 NotePad主页面如图所示
 ## 拓展功能特性
 - **标签目录具有时间戳**：能更方便地查看便签的更新时间。
-- ![Alt Text](../NotePad_new-master/png/img_2.png)
+- ![Alt Text](/png/img_2.png)
 
 
 - **搜索便签**：通过搜索栏快速查找特定的便签。
