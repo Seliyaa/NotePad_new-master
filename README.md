@@ -57,6 +57,12 @@
          </LinearLayout>
      </LinearLayout>
 
+在PROJECT中添加关于更新时间的请求   
+    'private static final String[] PROJECTION = new String[] {
+    NotePad.Notes._ID, // 0
+    NotePad.Notes.COLUMN_NAME_TITLE, // 1
+    NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE
+    };'
 
 
 ### 搜索便签：通过搜索栏快速查找特定的便签。
